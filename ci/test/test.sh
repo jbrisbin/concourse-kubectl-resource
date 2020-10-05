@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
-echo 'Hello World!'
+DATA=$(cat -)
+
+echo $DATA

@@ -71,7 +71,7 @@ jobs:
           outputs:
             - name: test-results
           params:
-            DOT_KUBE_CONFIG: "((eks-test-kubeconfig))"
+            DOT_KUBE_CONFIG: "((eks-dev-kubeconfig))"
           run:
             dir: concourse-kubectl-resource
             path: ci/test/test.sh
