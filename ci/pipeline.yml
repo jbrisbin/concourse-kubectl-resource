@@ -1,0 +1,78 @@
+resource_types:
+  - name: gcs-resource
+    type: docker-image
+    source:
+      repository: frodenas/gcs-resource
+
+resources:
+  - name: concourse-kubectl-resource
+    type: git
+    icon: github
+    source:
+      uri: https://github.com/jbrisbin/concourse-kubectl-resource.git
+      username: ((jbrisbin-gh-token))
+      password: x-oauth-basic
+      branch: main
+
+  - name: kubectl-resource-image
+    type: registry-image
+    icon: docker
+    source:
+      repository: containers.instana.io/fleet/beeinstana/kubectl-resource
+      tag: latest
+      username: ((containers-instana-io-creds.username))
+      password: ((containers-instana-io-creds.password))
+
+jobs:
+  - name: image-build
+    serial: true
+    plan:
+      - get: concourse-kubectl-resource
+        trigger: true
+      - task: build
+        privileged: true
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: vito/oci-build-task
+          params:
+            DOCKERFILE: concourse-kubectl-resource/Dockerfile
+            CONTEXT: concourse-kubectl-resource
+          inputs:
+            - name: concourse-kubectl-resource
+          outputs:
+            - name: image
+          run:
+            path: build
+      - put: kubectl-resource-image
+        params:
+          image: image/image.tar
+  
+  - name: resource-test
+    plan:
+      - get: concourse-kubectl-resource
+        trigger: true
+        passed:
+          - image-build
+      - task: test
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: containers.instana.io/fleet/beeinstana/kubectl-resource
+              tag: latest
+              username: ((containers-instana-io-creds.username))
+              password: ((containers-instana-io-creds.password))
+          inputs:
+            - name: concourse-kubectl-resource
+          outputs:
+            - name: test-results
+          params:
+            DOT_KUBE_CONFIG: "((eks-test-kubeconfig))"
+          run:
+            dir: concourse-kubectl-resource
+            path: ci/test/test.sh
+
