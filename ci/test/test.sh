@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-DATA=$(cat -)
+echo ${DOT_KUBE_CONFIG}
 
-echo $DATA
+echo 'Hello World!'
