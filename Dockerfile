@@ -1,4 +1,4 @@
-FROM alpine
+FROM ubuntu
 
 ARG KUBECTL_VERSION=1.18.9
 
@@ -8,10 +8,4 @@ RUN apk add jq curl && \
     mv ./kubectl /usr/local/bin/kubectl && \
     mkdir -p /opt/resource
 
-COPY check /opt/resource
-COPY in /opt/resource
-COPY out /opt/resource
-
-RUN mkdir -p .kube
-
-RUN chmod a+x /opt/resource/*
+RUN mkdir -p /root/.kube
