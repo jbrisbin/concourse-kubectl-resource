@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 echo ${DOT_KUBE_CONFIG} >~/.kube/config
 
