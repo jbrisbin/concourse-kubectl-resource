@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
-echo ${DOT_KUBE_CONFIG}
+echo ${DOT_KUBE_CONFIG} >~/.kube/config
 
-echo 'Hello World!'
+kubectl config get-contexts
+kubectl clusterinfo

@@ -12,4 +12,6 @@ COPY check /opt/resource
 COPY in /opt/resource
 COPY out /opt/resource
 
+RUN mkdir -p .kube
+
 RUN chmod a+x /opt/resource/*
