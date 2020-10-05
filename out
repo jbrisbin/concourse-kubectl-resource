@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+set -e
+
+exec 3>&1
+exec 1>&2
+
+echo 'Starting out'
+echo [{\"value\": \"out\"}] >&3
+echo 'Out completed'
